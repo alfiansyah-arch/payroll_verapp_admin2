@@ -1,0 +1,102 @@
+<?php
+
+use App\Http\Controllers\BroadcastController;
+use App\Http\Controllers\PayrollController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\EmployeeTaskController;
+use App\Http\Controllers\SettingsController;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
+
+Route::get('/', [AuthController::class, 'dashboard'])->name('dashboard');
+Route::get('login', [AuthController::class, 'index'])->name('login');
+Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.post');
+Route::get('registration', [AuthController::class, 'registration'])->name('register');
+Route::post('post-registration', [AuthController::class, 'postRegistration'])->name('register.post');
+
+Route::middleware('auth')->group(function () {
+    // Auth Controller
+    Route::get('dashboard', [AuthController::class, 'dashboard']);
+    Route::post('logout', [AuthController::class, '__invoke'])->name('logout.post'); 
+
+    // EMployeeController.php
+    Route::get('/employees', [EmployeeController::class, 'index'])->name('employees_data');
+    Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.createusers');
+    Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
+    Route::get('/employees/{id}/edit', [EmployeeController::class, 'edit'])->name('employees.editusers');
+    Route::put('/employees/{id}', [EmployeeController::class, 'update'])->name('employees.update');
+    Route::delete('/employees/{id}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
+    Route::get('/get-positions/{departmentId}', [EmployeeController::class, 'getPositions']);
+
+    // EmployeeTaskController.php
+    Route::get('/employee-task', [EmployeeTaskController::class, 'index'])->name('employee_task_list');
+    Route::get('/employee-task/create-task', [EmployeeTaskController::class, 'create_task'])->name('employee-task.createtask');
+    Route::get('/employee-task/create-user-task', [EmployeeTaskController::class, 'create_task_detail'])->name('employee-task.createtaskdetail');
+    Route::post('/employee-task/store-task', [EmployeeTaskController::class, 'storetask'])->name('employee-task.storetask');
+    Route::post('/employee-task/store-user-task', [EmployeeTaskController::class, 'storetaskdetail'])->name('employee-task.storetaskdetail');
+    Route::get('/employee-task/{id}/edit-task', [EmployeeTaskController::class, 'edittask'])->name('employee-task.edittask');
+    Route::put('/employee-task/update-task/{id}', [EmployeeTaskController::class, 'updatetask'])->name('employee-task.updatetask');
+    Route::get('/employee-task/{id}/edit-task-detail', [EmployeeTaskController::class, 'edittaskdetail'])->name('employee-task.edittaskdetail');
+    Route::put('/employee-task/update-task-detail/{id}', [EmployeeTaskController::class, 'updatetaskdetail'])->name('employee-task.updatetaskdetail');
+    Route::delete('/employee-task/delete-task/{id}', [EmployeeTaskController::class, 'destroytask'])->name('employee-task.destroytask');    
+    Route::delete('/employee-task/delete-task-detail/{id}', [EmployeeTaskController::class, 'destroytaskdetail'])->name('employee-task.destroytaskdetail');  
+
+    // PayrollController.php
+    Route::get('/payroll', [PayrollController::class, 'index'])->name('payroll.index');
+    Route::get('/payroll/create', [PayrollController::class, 'create'])->name('payroll.create');
+    Route::post('/payroll', [PayrollController::class, 'store'])->name('payroll.store');
+    Route::get('/payroll/{id}/edit', [PayrollController::class, 'edit'])->name('payroll.edit');
+    Route::put('/payroll/{id}', [PayrollController::class, 'update'])->name('payroll.update');
+    Route::delete('/payroll/{id}', [PayrollController::class, 'destroy'])->name('payroll.destroy');
+
+    // BroadcastController.php
+    Route::get('/broadcast', [BroadcastController::class, 'index'])->name('broadcast.index');
+    Route::get('/broadcast/create', [BroadcastController::class, 'create'])->name('broadcast.create');
+    Route::post('/broadcast', [BroadcastController::class, 'store'])->name('broadcast.store');   
+    Route::get('/broadcast/create-category', [BroadcastController::class, 'createCategory'])->name('broadcast.createcategory');
+    Route::post('/broadcast/store-category', [BroadcastController::class, 'storeCategory'])->name('broadcast.storeCategory');
+    Route::get('/broadcast/{id}/show', [BroadcastController::class, 'show'])->name('broadcast.show');
+    Route::get('/broadcast/{id}/edit', [BroadcastController::class, 'edit'])->name('broadcast.edit');
+    Route::put('/broadcast/{id}', [BroadcastController::class, 'update'])->name('broadcast.update');
+    Route::get('/broadcast/{id}/edit-category', [BroadcastController::class, 'editCategory'])->name('broadcast.editcategory');
+    Route::put('/broadcast/update-category/{id}', [BroadcastController::class, 'updateCategory'])->name('broadcast.updatecategory');
+    Route::delete('/broadcast/{id}', [BroadcastController::class, 'destroy'])->name('broadcast.destroy');
+    Route::delete('/broadcast/delete-category/{id}', [BroadcastController::class, 'destroyCategory'])->name('broadcast.destroycategory');
+    Route::post('/broadcast/upload', [BroadcastController::class, 'upload'])->name('ckeditor.upload');
+
+    // SettingsController.php
+    // Setting Department
+    Route::get('/settings/departments', [SettingsController::class, 'departments'])->name('settings.departments');
+    Route::get('/settings/create-department', [SettingsController::class, 'createDepartment'])->name('settings.departments.create');
+    Route::post('/settings/department-store', [SettingsController::class, 'storeDepartment'])->name('settings.departments.store');
+    Route::get('/settings/{id}/edit-department', [SettingsController::class, 'editDepartment'])->name('settings.departments.edit');
+    Route::put('/settings/departments/{id}', [SettingsController::class, 'updateDepartment'])->name('settings.departments.update');
+    Route::delete('/settings/departments/{dept_id}', [SettingsController::class, 'destroyDepartment'])->name('settings.departments.destroy');
+
+    // Setting Position
+    Route::get('/settings/positions', [SettingsController::class, 'positions'])->name('settings.positions');
+    Route::get('/settings/create-position', [SettingsController::class, 'createPosition'])->name('settings.positions.create');
+    Route::post('/settings/position-store', [SettingsController::class, 'storePosition'])->name('settings.positions.store');
+    Route::get('/settings/{id}/edit-position', [SettingsController::class, 'editPosition'])->name('settings.positions.edit');
+    Route::put('/settings/positions/{id}', [SettingsController::class, 'updatePosition'])->name('settings.positions.update');
+    Route::delete('/settings/positions/{id}', [SettingsController::class, 'destroyPosition'])->name('settings.positions.destroy');
+
+    // Setting Installsments
+    Route::get('/settings/installsments', [SettingsController::class, 'installsments'])->name('settings.installments');
+    Route::get('/settings/create-installsment', [SettingsController::class, 'createInstallments'])->name('settings.installments.create');
+    Route::post('/settings/installments-store', [SettingsController::class, 'storeInstallments'])->name('settings.installments.store');
+    Route::get('/settings/{id}/edit-installsment', [SettingsController::class, 'editInstallments'])->name('settings.installments.edit');
+    Route::put('/settings/installsments/{id}', [SettingsController::class, 'updateInstallments'])->name('settings.installments.update');
+    Route::delete('/settings/installsments/{id}', [SettingsController::class, 'destroyInstallments'])->name('settings.installments.destroy');
+});
