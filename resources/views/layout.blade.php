@@ -156,7 +156,7 @@
             </a>
             <div class="collapse" id="attendances">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="{{route('dashboard')}}">Attendances Data</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{route('attendances.presensi')}}">Attendances Data</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('dashboard')}}">Leaves Appraisals</a></li>
               </ul>
             </div>

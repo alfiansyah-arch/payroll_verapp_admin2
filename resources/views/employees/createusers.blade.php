@@ -61,11 +61,11 @@
                     </div>
                     <div class="form-group">
                       <label for="password">Password</label>
-                      <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                      <input type="password" class="form-control" id="password" name="password" placeholder="Password .min 8 characters" min="8" required>
                     </div>
                     <div class="form-group">
                       <label for="confirm_password">Confirm Password</label>
-                      <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Password" required>
+                      <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Same with password" min="8" required>
                     </div>
                     <button type="submit" class="btn btn-primary mr-2">Submit</button>
                     <a class="btn btn-light" href="{{route('employees_data')}}">Cancel</a>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttendancesController;
 use App\Http\Controllers\BroadcastController;
 use App\Http\Controllers\PayrollController;
 use Illuminate\Support\Facades\Route;
@@ -74,6 +75,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/broadcast/{id}', [BroadcastController::class, 'destroy'])->name('broadcast.destroy');
     Route::delete('/broadcast/delete-category/{id}', [BroadcastController::class, 'destroyCategory'])->name('broadcast.destroycategory');
     Route::post('/broadcast/upload', [BroadcastController::class, 'upload'])->name('ckeditor.upload');
+
+    // AttendancesController.php
+    Route::get('/attendances/presensi', [AttendancesController::class, 'presensi'])->name('attendances.presensi');
+    Route::get('/attendances/create-presensi', [AttendancesController::class, 'createPresensi'])->name('attendances.presensi.create');
+    Route::post('/attendances/presensi-store', [AttendancesController::class, 'storePresensi'])->name('attendances.presensi.store');
+    Route::get('/attendances/{id}/edit-presensi', [AttendancesController::class, 'editPresensi'])->name('attendances.presensi.edit');
+    Route::put('/attendances/presensi/update-presensi/{id}', [AttendancesController::class, 'updatePresensi'])->name('attendances.presensi.update');
+    Route::put('/attendances/presensi/{id}', [AttendancesController::class, 'updateStatus'])->name('attendances.presensi.updatestatus');
+    Route::delete('/attendances/presensi/{dept_id}', [AttendancesController::class, 'destroyPresensi'])->name('attendances.presensi.destroy');
 
     // SettingsController.php
     // Setting Department
