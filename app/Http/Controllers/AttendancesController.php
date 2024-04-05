@@ -4,21 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Attendances;
-use App\Models\CategoryBroadcast;
+use App\Models\Leaves;
 use Illuminate\Http\Request;
+use Carbon\CarbonPeriod;
 
 class AttendancesController extends Controller
 {
+    // Fungsi Presensi
     public function presensi(Request $request)
     {
         $title = 'Attendances Data';
         $avatar = $request->user()->avatar;
         
-        // Ambil bulan dan tahun dari URL jika tersedia
         $currentMonth = $request->input('month', date('n'));
         $currentYear = $request->input('year', date('Y'));
 
-        // Atur bulan dan tahun dalam rentang yang valid
         if ($currentMonth < 1) {
             $currentMonth = 12;
             $currentYear--;
@@ -27,7 +27,6 @@ class AttendancesController extends Controller
             $currentYear++;
         }
 
-        // Ambil data kehadiran untuk bulan dan tahun yang dipilih
         $attendances = Attendances::leftJoin('users', 'attendances.user_id', '=', 'users.user_id')
             ->select('attendances.*', 'users.username')
             ->whereYear('date', $currentYear)
@@ -136,11 +135,94 @@ class AttendancesController extends Controller
         return redirect()->route('attendances.presensi')->with('success', 'Status updated successfully!');
     }
 
-    public function destroy($id)
+    public function destroyPresensi($id)
     {
-        $broadcast = Broadcast::findOrFail($id);
-        $broadcast->delete();
+        $attendances = Attendances::findOrFail($id);
+        $attendances->delete();
 
-        return redirect()->route('broadcast.index')->with('success', 'Broadcast deleted successfully!');
+        return redirect()->route('attendances.presensi')->with('success', 'Attendance deleted successfully!');
     }
+
+    // End Fungsi Presensi
+
+    // Fungsi Leaves
+    public function leaves(Request $request)
+    {
+        $title = 'Leaves Data';
+        $avatar = $request->user()->avatar;
+
+        $leaves = Leaves::leftJoin('users', 'leaves.user_id', '=', 'users.user_id')
+        ->select('leaves.*', 'users.username')
+        ->where('leaves.status', '=', 'Pending')
+        ->get();
+
+        $leavesHistory = Leaves::leftJoin('users', 'leaves.user_id', '=', 'users.user_id')
+        ->select('leaves.*', 'users.username')
+        ->where(function ($query) {
+            $query->where('leaves.status', 'Accepted')
+                ->orWhere('leaves.status', 'Rejected');
+        })
+        ->get();
+
+        $role = $request->user()->role_name;
+        $status = $request->user()->status;
+        $employees = [];
+        $totalEmployee = 0;
+
+        if ($role === "Super Admin" || $status == 'Active') {
+            $employees = User::all();
+            $totalUser = $employees->count();
+        } elseif ($role === "Admin" || $status == 'Active') {
+            $employees = User::where('role_name', 'Employee')->get();
+            $totalEmployee = $employees->count();
+        }
+        
+        return view('attendances.leaves.index', compact('employees', 'leaves','leavesHistory', 'title', 'avatar', 'totalUser', 'totalEmployee'));
+    }
+
+    public function updateLeaves(Request $request, $id)
+    {
+        $request->validate([
+            'user_id' => 'required',
+            'status' => 'required',
+        ]);
+
+        $leaves = Leaves::findOrFail($id);
+
+        // Update status izin
+        $leaves->update([
+            'status' => $request->status
+        ]);
+
+        // Jika izin diterima, tambahkan entri baru ke tabel attendances
+        if ($request->status === 'Accepted') {
+            $acceptedLeave = Leaves::findOrFail($id);
+
+            // Ambil rentang tanggal dari dan hingga dari izin yang diterima
+            $fromDate = $acceptedLeave->from_date;
+            $toDate = $acceptedLeave->to_date;
+
+            // Buat entri untuk setiap tanggal dalam rentang
+            $datesInRange = CarbonPeriod::create($fromDate, $toDate);
+            foreach ($datesInRange as $date) {
+                Attendances::create([
+                    'user_id' => $acceptedLeave->user_id,
+                    'month' => $date->format('F'),
+                    'date' => $date->format('Y-m-d'),
+                    'status' => $acceptedLeave->reason,
+                ]);
+            }
+
+            // Tambahkan juga entri untuk tanggal terakhir
+            Attendances::create([
+                'user_id' => $acceptedLeave->user_id,
+                'month' => $toDate->format('F'),
+                'date' => $toDate->format('Y-m-d'),
+                'status' => $acceptedLeave->reason,
+            ]);
+        }
+    }
+
+
+    // End Fungsi Leaves
 }

@@ -42,7 +42,7 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <div class="table-responsive">
-                                                <table id="dataTable2" class="table table-striped" style="width:100%">
+                                                <table id="dataTable2" class="table table-sm table-hover" style="width:100%">
                                                     <thead>
                                                         <tr>
                                                             <th rowspan="2">No.</th>
@@ -69,23 +69,26 @@
                                                             echo "<td>" . $no++ . "</td>";
                                                             echo "<td>" . $employee->username . "</td>";
                                                             for ($j = 1; $j <= $totalDaysInMonth; $j++) {
-                                                                $date = date("$year-$month-0$j", strtotime("$firstDayOfMonth +$j days"));
+                                                                $date = date("$year-$month-" . sprintf("%02d", $j), strtotime("$firstDayOfMonth +$j days"));
                                                                 $attendance = $attendances->where('user_id', $employee->user_id)
                                                                     ->where('date', $date)
                                                                     ->first();
                                                                 $status = $attendance ? $attendance->status : '-';
                                                                 switch ($status) {
                                                                     case 'Present':
-                                                                        echo "<td>P</td>";
+                                                                        echo "<td style='background-color:#00c013;color:white;text-align:center;'><p style='font-size:12px;'><b>P</b></p></td>";
                                                                         break;
                                                                     case 'Sick':
-                                                                        echo "<td>S</td>";
+                                                                        echo "<td style='background-color:#ffcf24;color:white;text-align:center;'><p style='font-size:12px;'><b>S</b></p></td>";
                                                                         break;
                                                                     case 'Absent':
-                                                                        echo "<td>A</td>";
+                                                                        echo "<td style='background-color:#c20000;color:white;text-align:center;'><p style='font-size:12px;'><b>A</b></p></td>";
                                                                         break;
                                                                     case 'Leaves':
-                                                                        echo "<td>L</td>";
+                                                                        echo "<td style='background-color:#818181;color:white;text-align:center;'><p style='font-size:12px;'><b>L</b></p></td>";
+                                                                        break;
+                                                                    case 'Absent Permission':
+                                                                        echo "<td style='background-color:#4379ee;color:white;text-align:center;'><p style='font-size:12px;'><b>AP</b></p></td>";
                                                                         break;
                                                                     default:
                                                                         echo "<td></td>";
@@ -121,6 +124,7 @@
                                         <tr>
                                             <th>No.</th>
                                             <th>Username</th>
+                                            <th>Date</th>
                                             <th>Entry / Exit Time</th>
                                             <th>Entry / Exit Location</th>
                                             <th>Entry Photo</th>
@@ -136,6 +140,7 @@
                                         <tr>
                                             <th width="5%">{{ $no }}</th>
                                             <td>{{$attendance->username}}</td>
+                                            <td>{{$attendance->date}}</td>
                                             <td>{{$attendance->entry_time}} / {{$attendance->exit_time}}</td>
                                             <td>{{$attendance->entry_location}} / {{$attendance->exit_location}}</td>
                                             <td>{{$attendance->entry_photo}}</td>
@@ -152,32 +157,25 @@
                                                                     <option value="Leaves" {{ $attendance->status === 'Leaves' ? 'selected' : '' }}>Leaves</option>
                                                                     <option value="Sick" {{ $attendance->status === 'Sick' ? 'selected' : '' }}>Sick</option>
                                                                     <option value="Absent" {{ $attendance->status === 'Absent' ? 'selected' : '' }}>Absent</option>
+                                                                    <option value="Absent Permission" {{ $attendance->status === 'Absent Permission' ? 'selected' : '' }}>Absent Permission</option>
                                                                 </select>
                                                             </div>
                                                         </form>
                                             </div>
                                             </td>
                                             <td>
-                                                <div class="dropdown flex-md-grow-1 flex-xl-grow-0">
-                                                    <button class="btn btn-sm btn-light dropdown-toggle" style="background-color:#2dd8eb" type="button" id="dropdownMenuDate2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                                        Action
-                                                    </button>
-                                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuDate2">
-                                                        <a class="dropdown-item" href="{{route('settings.departments.edit', $attendance->id)}}">Edit</a>
-                                                        <form id="deleteFormTask" action="{{ route('settings.departments.destroy', $attendance->id) }}" method="POST" style="display: inline;"
-                                                        onsubmit="return confirm('Do you really want to delete Broadcast = {{ $attendance->dept_name }} ?');">
+                                                        <form id="deleteFormTask" action="{{ route('attendances.presensi.destroy', $attendance->id) }}" method="POST" style="display: inline;"
+                                                        onsubmit="return confirm('Do you really want to delete This Attendance with Username = {{ $attendance->username }} and Date = {{$attendance->date}}?');">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="dropdown-item"><span>Delete</span></button>
+                                                            <button type="submit" class="btn btn-sm btn-light" style="background-color:#c20000;color:white"><span>Delete</span></button>
                                                         </form>
-                                                    </div>
-                                                </div>
                                             </td>
                                         </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
-                                <a class="btn btn-success" href="{{route('settings.departments.create')}}">Add Broadcast</a>
+                                <!-- <a class="btn btn-success" href="{{route('settings.departments.create')}}">Add Broadcast</a> -->
                             </div>
                         </div>
                     </div>

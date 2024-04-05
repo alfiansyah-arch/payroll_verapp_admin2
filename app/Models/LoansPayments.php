@@ -12,6 +12,7 @@ class LoansPayments extends Model
         'payment_id',
         'loan_id',
         'installments',
+        'interest',
         'total_loan',
         'payment_per_installments',
         'status',

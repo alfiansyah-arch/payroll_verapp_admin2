@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Interests;
+use App\Models\LoansPayments;
 use App\Models\User;
 use App\Models\Loans;
 use App\Models\Departments;
@@ -268,6 +270,98 @@ class SettingsController extends Controller
         $installments->delete();
     
         return redirect()->route('settings.installments')->with('success', 'Installments deleted successfully!');
+    }
+
+    // End Controller Installsment
+    // ----------------------------------------------------------------------------------------------------------
+
+    // Controller Interest
+
+    public function interests(Request $request)
+    {
+        $title = 'Settings Fill Interest';
+        $avatar = $request->user()->avatar;
+        $interests = Interests::all();
+        $role = $request->user()->role_name;
+        $status = $request->user()->status;
+        if ($role === "Super Admin" || $status == 'Active') {
+            $employees = User::all();
+        } elseif ($role === "Admin" || $status == 'Active') {
+            $employees = User::where('role_name', 'Employee')->get();
+        }
+        return view('settings.interests.index', compact('interests', 'title','avatar'));
+    }
+
+    public function createInterests(Request $request)
+    {
+        $title = 'Add New Interests';
+        $avatar = $request->user()->avatar;
+
+        $existingInterest = Interests::count();
+
+        if ($existingInterest > 0) {
+            return redirect()->route('settings.interests')->with('danger', 'Only one interest data is allowed.');
+        }
+
+        $interests = Interests::all();
+        return view('settings.interests.create', compact('title', 'interests', 'avatar'));
+    }
+
+    public function storeInterests(Request $request)
+    {
+        $request->validate([
+            'interest_amount' => 'required',
+        ]);
+
+        $existingInterest = Interests::count();
+
+        if ($existingInterest > 0) {
+            return redirect()->route('settings.interests')->with('danger', 'Only one interest data is allowed.');
+        }
+
+        $data = $request->all();
+
+        $interests = new Interests();
+        $interests->interest_amount = $data['interest_amount'];
+
+        $interests->save();
+
+        return redirect()->route('settings.interests')->with('success', 'Interest added successfully');
+    }
+    
+    public function editInterests(Request $request, $id)
+    {
+        $title = 'Edit Data Installment';
+        $avatar = $request->user()->avatar;
+        $interests = Interests::findOrFail($id);
+        return view('settings.interests.edit', compact('interests','title','avatar'));
+    }
+
+    public function updateInterests(Request $request, $id)
+    {
+        $request->validate([
+            'interest_amount' => 'required',
+        ]);
+    
+        $interests = Interests::findOrFail($id);
+        $interests->update([
+            'interest_amount' => $request->interest_amount
+        ]);
+    
+        return redirect()->route('settings.interests')->with('success', 'Interests updated successfully!');
+    }
+
+    public function destroyInterests($id)
+    {
+        $interests = Interests::findOrFail($id);
+        $selectedInterests = $interests->id;
+        $isUsed = LoansPayments::where('interest', $selectedInterests)->exists();
+        if ($isUsed) {
+            return redirect()->route('settings.interests')->with('danger', 'Interest is used, cannot delete!');
+        }
+        $interests->delete();
+    
+        return redirect()->route('settings.interests')->with('success', 'Interests deleted successfully!');
     }
 
     // End Controller Installsment

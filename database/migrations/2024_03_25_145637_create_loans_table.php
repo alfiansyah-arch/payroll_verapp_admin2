@@ -20,6 +20,7 @@ class CreateLoansTable extends Migration
             $table->string('loan_amount');
             $table->string('method');
             $table->string('installments');
+            $table->string('interest');
             $table->date('loan_date');
             $table->string('status');
             $table->timestamps();

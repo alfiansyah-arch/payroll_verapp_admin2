@@ -18,12 +18,12 @@ class CreateAttendancesTable extends Migration
             $table->string('user_id');
             $table->string('month');
             $table->date('date');
-            $table->time('entry_time');
-            $table->time('exit_time');
-            $table->string('entry_photo');
-            $table->string('exit_photo');
-            $table->text('entry_location');
-            $table->text('exit_location');
+            $table->time('entry_time')->nullable();
+            $table->time('exit_time')->nullable();
+            $table->string('entry_photo')->nullable();
+            $table->string('exit_photo')->nullable();
+            $table->text('entry_location')->nullable();
+            $table->text('exit_location')->nullable();
             $table->string('status');
             $table->timestamps();
         });

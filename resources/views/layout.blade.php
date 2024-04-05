@@ -157,7 +157,7 @@
             <div class="collapse" id="attendances">
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item"> <a class="nav-link" href="{{route('attendances.presensi')}}">Attendances Data</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{{route('dashboard')}}">Leaves Appraisals</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{route('attendances.leaves')}}">Leaves Appraisals</a></li>
               </ul>
             </div>
           </li>
@@ -169,7 +169,7 @@
             </a>
             <div class="collapse" id="loans">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="{{route('dashboard')}}">List Loans</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{route('loans.list')}}">List Loans</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('dashboard')}}">History Loans</a></li>
               </ul>
             </div>
@@ -200,6 +200,7 @@
                 <li class="nav-item"> <a class="nav-link" href="{{route('settings.departments')}}">Departments</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('settings.positions')}}">Positions</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('settings.installments')}}">Installsments</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{route('settings.interests')}}">Interests</a></li>
               </ul>
             </div>
           </li>
@@ -425,6 +426,7 @@
 <script>
   let table = new DataTable('#dataTable1');
   let table2 = new DataTable('#dataTable2');
+  let table3 = new DataTable('#dataTable3');
 </script>
 
 <script>

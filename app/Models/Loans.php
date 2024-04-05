@@ -14,7 +14,17 @@ class Loans extends Model
         'loan_amount',
         'method',
         'installments',
+        'interest',
         'loan_date',
         'status',
     ];
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($loan) {
+            // Hapus semua entri LoansPayments yang terkait
+            LoansPayments::where('loan_id', $loan->loan_id)->delete();
+        });
+    }
 }

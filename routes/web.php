@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AttendancesController;
 use App\Http\Controllers\BroadcastController;
+use App\Http\Controllers\LoansController;
 use App\Http\Controllers\PayrollController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
@@ -78,12 +79,24 @@ Route::middleware('auth')->group(function () {
 
     // AttendancesController.php
     Route::get('/attendances/presensi', [AttendancesController::class, 'presensi'])->name('attendances.presensi');
+    Route::get('/attendances/leaves', [AttendancesController::class, 'leaves'])->name('attendances.leaves');
     Route::get('/attendances/create-presensi', [AttendancesController::class, 'createPresensi'])->name('attendances.presensi.create');
     Route::post('/attendances/presensi-store', [AttendancesController::class, 'storePresensi'])->name('attendances.presensi.store');
     Route::get('/attendances/{id}/edit-presensi', [AttendancesController::class, 'editPresensi'])->name('attendances.presensi.edit');
     Route::put('/attendances/presensi/update-presensi/{id}', [AttendancesController::class, 'updatePresensi'])->name('attendances.presensi.update');
+    Route::put('/attendances/presensi/update-leaves/{id}', [AttendancesController::class, 'updateLeaves'])->name('attendances.leaves.update');
     Route::put('/attendances/presensi/{id}', [AttendancesController::class, 'updateStatus'])->name('attendances.presensi.updatestatus');
-    Route::delete('/attendances/presensi/{dept_id}', [AttendancesController::class, 'destroyPresensi'])->name('attendances.presensi.destroy');
+    Route::delete('/attendances/presensi/{id}', [AttendancesController::class, 'destroyPresensi'])->name('attendances.presensi.destroy');
+
+    // LoansController.php
+    Route::get('/loans/list', [LoansController::class, 'index'])->name('loans.list');
+    Route::get('/loans/list/create-loans', [LoansController::class, 'create'])->name('loans.list.create');
+    Route::post('/loans/list/loans-store', [LoansController::class, 'store'])->name('loans.list.store');
+    Route::get('/loans/list/{id}/edit-loans', [LoansController::class, 'edit'])->name('loans.list.edit');
+    Route::put('/loans/list/loans/{id}', [LoansController::class, 'update'])->name('loans.list.update');
+    Route::delete('/loans/list/loans/delete/{id}', [LoansController::class, 'destroy'])->name('loans.list.destroy');
+    Route::put('/loans/list/loans/completely/{id}', [LoansController::class, 'completely'])->name('loans.list.completely');
+    Route::get('/loans/list/{id}/show', [LoansController::class, 'show'])->name('loans.list.show');
 
     // SettingsController.php
     // Setting Department
@@ -109,4 +122,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/settings/{id}/edit-installsment', [SettingsController::class, 'editInstallments'])->name('settings.installments.edit');
     Route::put('/settings/installsments/{id}', [SettingsController::class, 'updateInstallments'])->name('settings.installments.update');
     Route::delete('/settings/installsments/{id}', [SettingsController::class, 'destroyInstallments'])->name('settings.installments.destroy');
+
+    // Setting Interest
+    Route::get('/settings/interests', [SettingsController::class, 'interests'])->name('settings.interests');
+    Route::get('/settings/create-interests', [SettingsController::class, 'createInterests'])->name('settings.interests.create');
+    Route::post('/settings/interests-store', [SettingsController::class, 'storeInterests'])->name('settings.interests.store');
+    Route::get('/settings/{id}/edit-interests', [SettingsController::class, 'editInterests'])->name('settings.interests.edit');
+    Route::put('/settings/interests/{id}', [SettingsController::class, 'updateInterests'])->name('settings.interests.update');
+    Route::delete('/settings/interests/{id}', [SettingsController::class, 'destroyInterests'])->name('settings.interests.destroy');
 });

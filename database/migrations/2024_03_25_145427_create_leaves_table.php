@@ -16,11 +16,11 @@ class CreateLeavesTable extends Migration
         Schema::create('leaves', function (Blueprint $table) {
             $table->id();
             $table->string('user_id');
-            $table->date('from_date');
-            $table->date('to_date');
-            $table->text('reason');
-            $table->text('picture');
-            $table->string('information');
+            $table->date('from_date')->nullable();
+            $table->date('to_date')->nullable();
+            $table->text('reason')->nullable();
+            $table->text('picture')->nullable();
+            $table->string('information')->nullable();
             $table->string('status');
             $table->timestamps();
         });
