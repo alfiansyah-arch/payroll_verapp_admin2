@@ -170,7 +170,6 @@
             <div class="collapse" id="loans">
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item"> <a class="nav-link" href="{{route('loans.list')}}">List Loans</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{{route('dashboard')}}">History Loans</a></li>
               </ul>
             </div>
           </li>
@@ -201,6 +200,7 @@
                 <li class="nav-item"> <a class="nav-link" href="{{route('settings.positions')}}">Positions</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('settings.installments')}}">Installsments</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('settings.interests')}}">Interests</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{route('dashboard')}}">Work Calendar</a></li>
               </ul>
             </div>
           </li>

@@ -38,7 +38,7 @@
                       <select class="form-control" id="installments" name="installments" required>
                           <option value="" selected disabled>Choose Installments</option>
                           @foreach($installments as $installment)
-                            <option value="{{ $installment->installments_amount }}" {{ $installment->installments_amount === $installment->installments_amount ? 'selected' : '' }}>{{ $installment->installments_amount }}</option>
+                          <option value="{{ $installment->installments_amount }}" {{ $selectedInstallments == $installment->installments_amount ? 'selected' : '' }}>{{ $installment->installments_amount }}</option>
                           @endforeach
                       </select>
                     </div>

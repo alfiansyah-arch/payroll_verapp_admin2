@@ -42,7 +42,7 @@
                                             <th width="5%">{{ $no }}</th>
                                             <td>{{$loanPending->username}}</td>
                                             <td>{{$loanPending->loan_id}}</td>
-                                            <td>{{$loanPending->loan_amount}}</td>
+                                            <td>Rp. {{ number_format($loanPending->loan_amount, 0, ',', '.') }}</td>
                                             <td>{{$loanPending->installments}}</td>
                                             <td>{{$loanPending->loan_date}}</td>
                                             <td class='font-weight-medium'><div class='badge badge-warning'>{{$loanPending->status}}</div></td>
@@ -104,7 +104,7 @@
                                             <th width="5%">{{ $no }}</th>
                                             <td>{{$loanAccepted->username}}</td>
                                             <td>{{$loanAccepted->loan_id}}</td>
-                                            <td>{{$loanAccepted->loan_amount}}</td>
+                                            <td>Rp. {{ number_format($loanAccepted->loan_amount, 0, ',', '.') }}</td>
                                             <td>{{$loanAccepted->installments}}</td>
                                             <td>{{$loanAccepted->loan_date}}</td>
                                             <td class='font-weight-medium'><div class='badge badge-success'>{{$loanAccepted->status}}</div></td>
@@ -114,6 +114,7 @@
                                                         Action
                                                     </button>
                                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuDate2">
+                                                    <a class="dropdown-item" href="{{route('loans.list.show', $loanAccepted->id)}}">Show</a>
                                                     <form action="{{ route('loans.list.completely', $loanAccepted->id) }}" method="POST" style="display: inline;"
                                                         onsubmit="return confirm('This loans is Compltely Paid Off = {{ $loanAccepted->loan_id }} ?');">
                                                             @csrf
@@ -170,7 +171,7 @@
                                             <th width="5%">{{ $no }}</th>
                                             <td>{{$loanRejected->username}}</td>
                                             <td>{{$loanRejected->loan_id}}</td>
-                                            <td>{{$loanRejected->loan_amount}}</td>
+                                            <td>Rp. {{ number_format($loanRejected->loan_amount, 0, ',', '.') }}</td>
                                             <td>{{$loanRejected->installments}}</td>
                                             <td>{{$loanRejected->loan_date}}</td>
                                             <td class='font-weight-medium'><div class='badge badge-danger'>{{$loanRejected->status}}</div></td>

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
 use App\Models\Installments;
 use App\Models\Interests;
 use App\Models\Loans;
@@ -95,7 +94,7 @@ class LoansController extends Controller
 
         if ($request->status === 'Accepted') {
             $loan_amount = $loans->loan_amount;
-            $installments = $loans->installments;
+            $installments = $request->installments;
             $interest = $loans->interest;
             
             $interest = Interests::orderBy('id', 'asc')->first()->interest_amount;
@@ -125,7 +124,7 @@ class LoansController extends Controller
 
     public function edit(Request $request, $id)
     {
-        $title = 'Edit Broadcast';
+        $title = 'Edit Loans';
         $avatar = $request->user()->avatar;
         $users = User::all();
         $loans = Loans::leftJoin('users', 'loans.user_id', '=', 'users.user_id')
@@ -163,7 +162,7 @@ class LoansController extends Controller
 
         if ($request->status === 'Accepted') {
             $loan_amount = $loans->loan_amount;
-            $installments = $loans->installments;
+            $installments = $request->installments;
 
             $payment_per_installments = ($loan_amount / $installments) + (($loan_amount / $installments) * ($interest / 100));
 
@@ -199,18 +198,20 @@ class LoansController extends Controller
 
     public function show(Request $request, $id)
     {
-        $title = 'Show Broadcast';
+        $title = 'Show Loans';
         $avatar = $request->user()->avatar;
+
         try {
-            $broadcasts = Broadcast::leftJoin('users', 'broadcasts.user_id', '=', 'users.user_id')
-                ->leftJoin('category_broadcasts', 'broadcasts.category', '=', 'category_broadcasts.id')
-                ->select('broadcasts.*', 'users.username', 'category_broadcasts.category_name')
-                ->findOrFail($id);
+            $loan = Loans::findOrFail($id);
+            
+            $loanPayments = LoansPayments::where('loan_id', $loan->loan_id)->get();
+            $username = User::where('user_id', $loan->user_id)->value('username');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return redirect()->back()->with('danger', 'Broadcast not found.');
+            return redirect()->back()->with('danger', 'Loan not found.');
         }
-        return view('broadcast.show', compact('broadcasts', 'title', 'avatar'));
-    }
+        
+        return view('loans.list.show', compact('loan', 'loanPayments','username', 'title', 'avatar'));
+    }    
 
     public function completely(Request $request, $id)
     {
